@@ -1,9 +1,39 @@
-resource "aci_rest" "fvTenant" {
-  dn         = "uni/tn-${var.name}"
-  class_name = "fvTenant"
+resource "aci_rest" "maintMaintP" {
+  dn         = "uni/fabric/maintpol-${var.name}"
+  class_name = "maintMaintP"
   content = {
     name      = var.name
-    nameAlias = var.alias
-    descr     = var.description
+    adminSt   = "untriggered"
+    graceful  = "no"
+    notifCond = "notifyOnlyOnFailures"
+    runMode   = "pauseOnlyOnFailures"
+  }
+}
+
+resource "aci_rest" "maintMaintGrp" {
+  dn         = "uni/fabric/maintgrp-${var.name}"
+  class_name = "maintMaintGrp"
+  content = {
+    name = var.name
+    type = "range"
+  }
+}
+
+resource "aci_rest" "maintRsMgrpp" {
+  dn         = "${aci_rest.maintMaintGrp.id}/rsmgrpp"
+  class_name = "maintRsMgrpp"
+  content = {
+    tnMaintMaintPName = var.name
+  }
+}
+
+resource "aci_rest" "fabricNodeBlk" {
+  for_each   = toset([for id in var.node_ids : tostring(id)])
+  dn         = "${aci_rest.maintMaintGrp.id}/nodeblk-${each.value}"
+  class_name = "fabricNodeBlk"
+  content = {
+    name  = each.value
+    from_ = each.value
+    to_   = each.value
   }
 }

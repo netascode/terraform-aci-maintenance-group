@@ -14,33 +14,83 @@ terraform {
 module "main" {
   source = "../.."
 
-  name = "ABC"
+  name = "UG1"
 }
 
-data "aci_rest" "fvTenant" {
-  dn = "uni/tn-ABC"
+data "aci_rest" "maintMaintP" {
+  dn = "uni/fabric/maintpol-${module.main.name}"
 
   depends_on = [module.main]
 }
 
-resource "test_assertions" "fvTenant" {
-  component = "fvTenant"
+resource "test_assertions" "maintMaintP" {
+  component = "maintMaintP"
 
   equal "name" {
     description = "name"
-    got         = data.aci_rest.fvTenant.content.name
-    want        = "ABC"
+    got         = data.aci_rest.maintMaintP.content.name
+    want        = module.main.name
   }
 
-  equal "nameAlias" {
-    description = "nameAlias"
-    got         = data.aci_rest.fvTenant.content.nameAlias
-    want        = ""
+  equal "adminSt" {
+    description = "adminSt"
+    got         = data.aci_rest.maintMaintP.content.adminSt
+    want        = "untriggered"
   }
 
-  equal "descr" {
-    description = "descr"
-    got         = data.aci_rest.fvTenant.content.descr
-    want        = ""
+  equal "graceful" {
+    description = "graceful"
+    got         = data.aci_rest.maintMaintP.content.graceful
+    want        = "no"
+  }
+
+  equal "notifCond" {
+    description = "notifCond"
+    got         = data.aci_rest.maintMaintP.content.notifCond
+    want        = "notifyOnlyOnFailures"
+  }
+
+  equal "runMode" {
+    description = "runMode"
+    got         = data.aci_rest.maintMaintP.content.runMode
+    want        = "pauseOnlyOnFailures"
+  }
+}
+
+data "aci_rest" "maintMaintGrp" {
+  dn = "uni/fabric/maintgrp-${module.main.name}"
+
+  depends_on = [module.main]
+}
+
+resource "test_assertions" "maintMaintGrp" {
+  component = "maintMaintGrp"
+
+  equal "name" {
+    description = "name"
+    got         = data.aci_rest.maintMaintGrp.content.name
+    want        = module.main.name
+  }
+
+  equal "type" {
+    description = "type"
+    got         = data.aci_rest.maintMaintGrp.content.type
+    want        = "range"
+  }
+}
+
+data "aci_rest" "maintRsMgrpp" {
+  dn = "${data.aci_rest.maintMaintGrp.id}/rsmgrpp"
+
+  depends_on = [module.main]
+}
+
+resource "test_assertions" "maintRsMgrpp" {
+  component = "maintRsMgrpp"
+
+  equal "tnMaintMaintPName" {
+    description = "tnMaintMaintPName"
+    got         = data.aci_rest.maintRsMgrpp.content.tnMaintMaintPName
+    want        = module.main.name
   }
 }
