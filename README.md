@@ -12,7 +12,8 @@ Location in GUI:
 
 ```hcl
 module "aci_maintenance_group" {
-  source = "netascode/maintenance-group/aci"
+  source  = "netascode/maintenance-group/aci"
+  version = ">= 0.0.1"
 
   name     = "UG1"
   node_ids = [101]
