@@ -20,7 +20,7 @@ resource "aci_rest" "maintMaintGrp" {
 }
 
 resource "aci_rest" "maintRsMgrpp" {
-  dn         = "${aci_rest.maintMaintGrp.id}/rsmgrpp"
+  dn         = "${aci_rest.maintMaintGrp.dn}/rsmgrpp"
   class_name = "maintRsMgrpp"
   content = {
     tnMaintMaintPName = var.name
@@ -29,7 +29,7 @@ resource "aci_rest" "maintRsMgrpp" {
 
 resource "aci_rest" "fabricNodeBlk" {
   for_each   = toset([for id in var.node_ids : tostring(id)])
-  dn         = "${aci_rest.maintMaintGrp.id}/nodeblk-${each.value}"
+  dn         = "${aci_rest.maintMaintGrp.dn}/nodeblk-${each.value}"
   class_name = "fabricNodeBlk"
   content = {
     name  = each.value
