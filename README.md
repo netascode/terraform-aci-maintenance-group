@@ -56,4 +56,5 @@ module "aci_maintenance_group" {
 | [aci_rest.maintMaintGrp](https://registry.terraform.io/providers/netascode/aci/latest/docs/resources/rest) | resource |
 | [aci_rest.maintMaintP](https://registry.terraform.io/providers/netascode/aci/latest/docs/resources/rest) | resource |
 | [aci_rest.maintRsMgrpp](https://registry.terraform.io/providers/netascode/aci/latest/docs/resources/rest) | resource |
+| [aci_rest.maintRsPolScheduler](https://registry.terraform.io/providers/netascode/aci/latest/docs/resources/rest) | resource |
 <!-- END_TF_DOCS -->

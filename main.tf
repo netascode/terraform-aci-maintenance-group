@@ -10,6 +10,14 @@ resource "aci_rest" "maintMaintP" {
   }
 }
 
+resource "aci_rest" "maintRsPolScheduler" {
+  dn         = "${aci_rest.maintMaintP.dn}/rspolScheduler"
+  class_name = "maintRsPolScheduler"
+  content = {
+    tnTrigSchedPName = "default"
+  }
+}
+
 resource "aci_rest" "maintMaintGrp" {
   dn         = "uni/fabric/maintgrp-${var.name}"
   class_name = "maintMaintGrp"
