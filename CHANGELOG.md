@@ -1,3 +1,7 @@
+## 0.0.4
+
+- Use default scheduler
+
 ## 0.0.3
 
 - Update implicit resource dependencies
