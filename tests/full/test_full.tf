@@ -58,6 +58,22 @@ resource "test_assertions" "maintMaintP" {
   }
 }
 
+data "aci_rest" "maintRsPolScheduler" {
+  dn = "${data.aci_rest.maintMaintP.dn}/rspolScheduler"
+
+  depends_on = [module.main]
+}
+
+resource "test_assertions" "maintRsPolScheduler" {
+  component = "maintRsPolScheduler"
+
+  equal "tnTrigSchedPName" {
+    description = "tnTrigSchedPName"
+    got         = data.aci_rest.maintRsPolScheduler.content.tnTrigSchedPName
+    want        = "default"
+  }
+}
+
 data "aci_rest" "maintMaintGrp" {
   dn = "uni/fabric/maintgrp-${module.main.name}"
 
