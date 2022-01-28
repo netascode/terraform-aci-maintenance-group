@@ -5,8 +5,8 @@ terraform {
     }
 
     aci = {
-      source  = "netascode/aci"
-      version = ">=0.2.0"
+      source  = "CiscoDevNet/aci"
+      version = ">=2.0.0"
     }
   }
 }
@@ -17,7 +17,7 @@ module "main" {
   name = "UG1"
 }
 
-data "aci_rest" "maintMaintP" {
+data "aci_rest_managed" "maintMaintP" {
   dn = "uni/fabric/maintpol-${module.main.name}"
 
   depends_on = [module.main]
@@ -28,36 +28,36 @@ resource "test_assertions" "maintMaintP" {
 
   equal "name" {
     description = "name"
-    got         = data.aci_rest.maintMaintP.content.name
+    got         = data.aci_rest_managed.maintMaintP.content.name
     want        = module.main.name
   }
 
   equal "adminSt" {
     description = "adminSt"
-    got         = data.aci_rest.maintMaintP.content.adminSt
+    got         = data.aci_rest_managed.maintMaintP.content.adminSt
     want        = "untriggered"
   }
 
   equal "graceful" {
     description = "graceful"
-    got         = data.aci_rest.maintMaintP.content.graceful
+    got         = data.aci_rest_managed.maintMaintP.content.graceful
     want        = "no"
   }
 
   equal "notifCond" {
     description = "notifCond"
-    got         = data.aci_rest.maintMaintP.content.notifCond
+    got         = data.aci_rest_managed.maintMaintP.content.notifCond
     want        = "notifyOnlyOnFailures"
   }
 
   equal "runMode" {
     description = "runMode"
-    got         = data.aci_rest.maintMaintP.content.runMode
+    got         = data.aci_rest_managed.maintMaintP.content.runMode
     want        = "pauseOnlyOnFailures"
   }
 }
 
-data "aci_rest" "maintMaintGrp" {
+data "aci_rest_managed" "maintMaintGrp" {
   dn = "uni/fabric/maintgrp-${module.main.name}"
 
   depends_on = [module.main]
@@ -68,19 +68,19 @@ resource "test_assertions" "maintMaintGrp" {
 
   equal "name" {
     description = "name"
-    got         = data.aci_rest.maintMaintGrp.content.name
+    got         = data.aci_rest_managed.maintMaintGrp.content.name
     want        = module.main.name
   }
 
   equal "type" {
     description = "type"
-    got         = data.aci_rest.maintMaintGrp.content.type
+    got         = data.aci_rest_managed.maintMaintGrp.content.type
     want        = "range"
   }
 }
 
-data "aci_rest" "maintRsMgrpp" {
-  dn = "${data.aci_rest.maintMaintGrp.id}/rsmgrpp"
+data "aci_rest_managed" "maintRsMgrpp" {
+  dn = "${data.aci_rest_managed.maintMaintGrp.id}/rsmgrpp"
 
   depends_on = [module.main]
 }
@@ -90,7 +90,7 @@ resource "test_assertions" "maintRsMgrpp" {
 
   equal "tnMaintMaintPName" {
     description = "tnMaintMaintPName"
-    got         = data.aci_rest.maintRsMgrpp.content.tnMaintMaintPName
+    got         = data.aci_rest_managed.maintRsMgrpp.content.tnMaintMaintPName
     want        = module.main.name
   }
 }

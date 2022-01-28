@@ -1,4 +1,4 @@
-resource "aci_rest" "maintMaintP" {
+resource "aci_rest_managed" "maintMaintP" {
   dn         = "uni/fabric/maintpol-${var.name}"
   class_name = "maintMaintP"
   content = {
@@ -10,15 +10,15 @@ resource "aci_rest" "maintMaintP" {
   }
 }
 
-resource "aci_rest" "maintRsPolScheduler" {
-  dn         = "${aci_rest.maintMaintP.dn}/rspolScheduler"
+resource "aci_rest_managed" "maintRsPolScheduler" {
+  dn         = "${aci_rest_managed.maintMaintP.dn}/rspolScheduler"
   class_name = "maintRsPolScheduler"
   content = {
     tnTrigSchedPName = "default"
   }
 }
 
-resource "aci_rest" "maintMaintGrp" {
+resource "aci_rest_managed" "maintMaintGrp" {
   dn         = "uni/fabric/maintgrp-${var.name}"
   class_name = "maintMaintGrp"
   content = {
@@ -27,17 +27,17 @@ resource "aci_rest" "maintMaintGrp" {
   }
 }
 
-resource "aci_rest" "maintRsMgrpp" {
-  dn         = "${aci_rest.maintMaintGrp.dn}/rsmgrpp"
+resource "aci_rest_managed" "maintRsMgrpp" {
+  dn         = "${aci_rest_managed.maintMaintGrp.dn}/rsmgrpp"
   class_name = "maintRsMgrpp"
   content = {
     tnMaintMaintPName = var.name
   }
 }
 
-resource "aci_rest" "fabricNodeBlk" {
+resource "aci_rest_managed" "fabricNodeBlk" {
   for_each   = toset([for id in var.node_ids : tostring(id)])
-  dn         = "${aci_rest.maintMaintGrp.dn}/nodeblk-${each.value}"
+  dn         = "${aci_rest_managed.maintMaintGrp.dn}/nodeblk-${each.value}"
   class_name = "fabricNodeBlk"
   content = {
     name  = each.value

@@ -5,8 +5,8 @@ terraform {
     }
 
     aci = {
-      source  = "netascode/aci"
-      version = ">=0.2.0"
+      source  = "CiscoDevNet/aci"
+      version = ">=2.0.0"
     }
   }
 }
@@ -18,7 +18,7 @@ module "main" {
   node_ids = [101]
 }
 
-data "aci_rest" "maintMaintP" {
+data "aci_rest_managed" "maintMaintP" {
   dn = "uni/fabric/maintpol-${module.main.name}"
 
   depends_on = [module.main]
@@ -29,37 +29,37 @@ resource "test_assertions" "maintMaintP" {
 
   equal "name" {
     description = "name"
-    got         = data.aci_rest.maintMaintP.content.name
+    got         = data.aci_rest_managed.maintMaintP.content.name
     want        = module.main.name
   }
 
   equal "adminSt" {
     description = "adminSt"
-    got         = data.aci_rest.maintMaintP.content.adminSt
+    got         = data.aci_rest_managed.maintMaintP.content.adminSt
     want        = "untriggered"
   }
 
   equal "graceful" {
     description = "graceful"
-    got         = data.aci_rest.maintMaintP.content.graceful
+    got         = data.aci_rest_managed.maintMaintP.content.graceful
     want        = "no"
   }
 
   equal "notifCond" {
     description = "notifCond"
-    got         = data.aci_rest.maintMaintP.content.notifCond
+    got         = data.aci_rest_managed.maintMaintP.content.notifCond
     want        = "notifyOnlyOnFailures"
   }
 
   equal "runMode" {
     description = "runMode"
-    got         = data.aci_rest.maintMaintP.content.runMode
+    got         = data.aci_rest_managed.maintMaintP.content.runMode
     want        = "pauseOnlyOnFailures"
   }
 }
 
-data "aci_rest" "maintRsPolScheduler" {
-  dn = "${data.aci_rest.maintMaintP.dn}/rspolScheduler"
+data "aci_rest_managed" "maintRsPolScheduler" {
+  dn = "${data.aci_rest_managed.maintMaintP.dn}/rspolScheduler"
 
   depends_on = [module.main]
 }
@@ -69,12 +69,12 @@ resource "test_assertions" "maintRsPolScheduler" {
 
   equal "tnTrigSchedPName" {
     description = "tnTrigSchedPName"
-    got         = data.aci_rest.maintRsPolScheduler.content.tnTrigSchedPName
+    got         = data.aci_rest_managed.maintRsPolScheduler.content.tnTrigSchedPName
     want        = "default"
   }
 }
 
-data "aci_rest" "maintMaintGrp" {
+data "aci_rest_managed" "maintMaintGrp" {
   dn = "uni/fabric/maintgrp-${module.main.name}"
 
   depends_on = [module.main]
@@ -85,19 +85,19 @@ resource "test_assertions" "maintMaintGrp" {
 
   equal "name" {
     description = "name"
-    got         = data.aci_rest.maintMaintGrp.content.name
+    got         = data.aci_rest_managed.maintMaintGrp.content.name
     want        = module.main.name
   }
 
   equal "type" {
     description = "type"
-    got         = data.aci_rest.maintMaintGrp.content.type
+    got         = data.aci_rest_managed.maintMaintGrp.content.type
     want        = "range"
   }
 }
 
-data "aci_rest" "maintRsMgrpp" {
-  dn = "${data.aci_rest.maintMaintGrp.id}/rsmgrpp"
+data "aci_rest_managed" "maintRsMgrpp" {
+  dn = "${data.aci_rest_managed.maintMaintGrp.id}/rsmgrpp"
 
   depends_on = [module.main]
 }
@@ -107,13 +107,13 @@ resource "test_assertions" "maintRsMgrpp" {
 
   equal "tnMaintMaintPName" {
     description = "tnMaintMaintPName"
-    got         = data.aci_rest.maintRsMgrpp.content.tnMaintMaintPName
+    got         = data.aci_rest_managed.maintRsMgrpp.content.tnMaintMaintPName
     want        = module.main.name
   }
 }
 
-data "aci_rest" "fabricNodeBlk" {
-  dn = "${data.aci_rest.maintMaintGrp.id}/nodeblk-101"
+data "aci_rest_managed" "fabricNodeBlk" {
+  dn = "${data.aci_rest_managed.maintMaintGrp.id}/nodeblk-101"
 
   depends_on = [module.main]
 }
@@ -123,19 +123,19 @@ resource "test_assertions" "fabricNodeBlk" {
 
   equal "name" {
     description = "name"
-    got         = data.aci_rest.fabricNodeBlk.content.name
+    got         = data.aci_rest_managed.fabricNodeBlk.content.name
     want        = "101"
   }
 
   equal "from_" {
     description = "from_"
-    got         = data.aci_rest.fabricNodeBlk.content.from_
+    got         = data.aci_rest_managed.fabricNodeBlk.content.from_
     want        = "101"
   }
 
   equal "to_" {
     description = "to_"
-    got         = data.aci_rest.fabricNodeBlk.content.to_
+    got         = data.aci_rest_managed.fabricNodeBlk.content.to_
     want        = "101"
   }
 }

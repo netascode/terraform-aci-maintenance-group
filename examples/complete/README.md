@@ -14,11 +14,10 @@ Note that this example will create resources. Resources can be destroyed with `t
 ```hcl
 module "aci_maintenance_group" {
   source  = "netascode/maintenance-group/aci"
-  version = ">= 0.0.1"
+  version = ">= 0.1.0"
 
   name     = "UG1"
   node_ids = [101]
 }
-
 ```
 <!-- END_TF_DOCS -->
